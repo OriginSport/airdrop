@@ -1,6 +1,5 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract StandardToken {
@@ -17,7 +16,7 @@ contract StandardToken {
     function approve(address spender, uint256 value) public returns (bool);
 }
 
-contract AirDrop is Ownable {
+contract AirDrop {
 
     using SafeMath for uint;
 
@@ -30,14 +29,14 @@ contract AirDrop is Ownable {
      * @param _addresses array of address to sent
      * @param _value transfer amount
      */
-    function batchTransferToken(address _contractAddress, address[] _addresses, uint _value) onlyOwner public {
+    function batchTransferToken(address _contractAddress, address[] _addresses, uint _value) public {
         // data validate & _addresses length limit
         require(_addresses.length > 0);
 
         StandardToken token = StandardToken(_contractAddress);
         // transfer circularly
         for (uint i = 0; i < _addresses.length; i++) {
-            token.transfer(_addresses[i], _value);
+            token.transferFrom(msg.sender, _addresses[i], _value);
         }
     }
 
@@ -48,7 +47,7 @@ contract AirDrop is Ownable {
      * @param _addresses array of address to sent
      * @param _value array of transfer amount
      */
-    function batchTransferToken(address _contractAddress, address[] _addresses, uint[] _value) onlyOwner public {
+    function batchTransferTokenS(address _contractAddress, address[] _addresses, uint[] _value) public {
         // data validate & _addresses length limit
         require(_addresses.length > 0);
         require(_addresses.length == _value.length);
@@ -56,7 +55,7 @@ contract AirDrop is Ownable {
         StandardToken token = StandardToken(_contractAddress);
         // transfer circularly
         for (uint i = 0; i < _addresses.length; i++) {
-            token.transfer(_addresses[i], _value[i]);
+            token.transferFrom(msg.sender, _addresses[i], _value[i]);
         }
     }
 
@@ -65,7 +64,7 @@ contract AirDrop is Ownable {
      *
      * @param _addresses array of address to sent
      */
-    function batchTransferETH(address[] _addresses) onlyOwner payable public {
+    function batchTransferETH(address[] _addresses) payable public {
         // data validate & _addresses length limit
         require(_addresses.length > 0);
 
@@ -81,7 +80,7 @@ contract AirDrop is Ownable {
      * @param _addresses array of address to sent
      * @param _value array of transfer amount
      */
-    function batchTransferETHs(address[] _addresses, uint[] _value) onlyOwner payable public {
+    function batchTransferETHS(address[] _addresses, uint[] _value) payable public {
         // data validate & _addresses length limit
         require(_addresses.length > 0);
         require(_addresses.length == _value.length);
