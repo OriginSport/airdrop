@@ -1,24 +1,10 @@
 pragma solidity ^0.4.24;
 
-import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
-
-contract StandardToken {
-    function totalSupply() public view returns (uint256);
-
-    function balanceOf(address who) public view returns (uint256);
-
-    function transfer(address to, uint256 value) public returns (bool);
-
-    function allowance(address owner, address spender) public view returns (uint256);
-
+contract ERC20Token {
     function transferFrom(address from, address to, uint256 value) public returns (bool);
-
-    function approve(address spender, uint256 value) public returns (bool);
 }
 
 contract AirDrop {
-
-    using SafeMath for uint;
 
     function () payable public {}
 
@@ -30,10 +16,7 @@ contract AirDrop {
      * @param _value transfer amount
      */
     function batchTransferToken(address _contractAddress, address[] _addresses, uint _value) public {
-        // data validate & _addresses length limit
-        require(_addresses.length > 0);
-
-        StandardToken token = StandardToken(_contractAddress);
+        ERC20Token token = ERC20Token(_contractAddress);
         // transfer circularly
         for (uint i = 0; i < _addresses.length; i++) {
             token.transferFrom(msg.sender, _addresses[i], _value);
@@ -48,11 +31,9 @@ contract AirDrop {
      * @param _value array of transfer amount
      */
     function batchTransferTokenS(address _contractAddress, address[] _addresses, uint[] _value) public {
-        // data validate & _addresses length limit
-        require(_addresses.length > 0);
         require(_addresses.length == _value.length);
 
-        StandardToken token = StandardToken(_contractAddress);
+        ERC20Token token = ERC20Token(_contractAddress);
         // transfer circularly
         for (uint i = 0; i < _addresses.length; i++) {
             token.transferFrom(msg.sender, _addresses[i], _value[i]);
@@ -65,12 +46,9 @@ contract AirDrop {
      * @param _addresses array of address to sent
      */
     function batchTransferETH(address[] _addresses) payable public {
-        // data validate & _addresses length limit
-        require(_addresses.length > 0);
-
         // transfer circularly
         for (uint i = 0; i < _addresses.length; i++) {
-            _addresses[i].transfer(msg.value.div(_addresses.length));
+            _addresses[i].transfer(msg.value / _addresses.length);
         }
     }
 
@@ -81,8 +59,6 @@ contract AirDrop {
      * @param _value array of transfer amount
      */
     function batchTransferETHS(address[] _addresses, uint[] _value) payable public {
-        // data validate & _addresses length limit
-        require(_addresses.length > 0);
         require(_addresses.length == _value.length);
 
         // transfer circularly
