@@ -6,7 +6,38 @@ contract ERC20Token {
 
 contract AirDrop {
 
-    function () payable public {}
+    function() payable public {}
+
+    /** ORS token */
+    ERC20Token public ORSToken = ERC20Token(0x0A22dccF5Bd0fAa7E748581693E715afefb2F679);
+
+    /**
+     * batch transfer for ORS token.(the same amount)
+     *
+     * @param _addresses array of address to sent
+     * @param _value transfer amount
+     */
+    function batchTransferORS(address[] _addresses, uint _value) public {
+        // transfer circularly
+        for (uint i = 0; i < _addresses.length; i++) {
+            ORSToken.transferFrom(msg.sender, _addresses[i], _value);
+        }
+    }
+
+    /**
+     * batch transfer for ORS token.
+     *
+     * @param _addresses array of address to sent
+     * @param _value array of transfer amount
+     */
+    function batchTransferORSS(address[] _addresses, uint[] _value) public {
+        require(_addresses.length == _value.length);
+
+        // transfer circularly
+        for (uint i = 0; i < _addresses.length; i++) {
+            ORSToken.transferFrom(msg.sender, _addresses[i], _value[i]);
+        }
+    }
 
     /**
      * batch transfer for ERC20 token.(the same amount)
