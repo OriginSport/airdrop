@@ -1,15 +1,19 @@
 pragma solidity ^0.4.24;
 
 contract ERC20Token {
-    function transferFrom(address from, address to, uint256 value) public returns (bool);
+    function transferFrom(address from, address to, uint value) public returns (bool);
 }
 
 contract AirDrop {
 
-    function() payable public {}
-
     /** ORS token */
-    ERC20Token public ORSToken = ERC20Token(0x0A22dccF5Bd0fAa7E748581693E715afefb2F679);
+    ERC20Token public ORSToken;
+
+    constructor() public {
+        ORSToken = ERC20Token(0x0A22dccF5Bd0fAa7E748581693E715afefb2F679);
+    }
+
+    function() payable public {}
 
     /**
      * batch transfer for ORS token.(the same amount)
